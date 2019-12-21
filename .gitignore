@@ -1,0 +1,19 @@
+# System and IDE files
+Thumbs.db
+.DS_Store
+.idea
+*.suo
+*.sublime-project
+*.sublime-workspace
+
+# Vendors
+node_modules/
+
+# Build
+build/
+/npm-debug.log
+
+#others
+/plugins
+phaser3-project-template-master.zip
+phaser3-rex-notes-master.zip
