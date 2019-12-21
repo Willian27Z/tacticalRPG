@@ -1,6 +1,6 @@
 
 import GUI from "./ActionMenu";
-import pathSorter from '../auxiliaries/pathMaker';
+import pathSorter from '../auxiliaries/pathSorter';
 
 var map;	//globalvariables
 var player;
@@ -11,14 +11,16 @@ var collisionTiles = [28,75,61,131];
 var selectable;
 var path;
 var mode = "move"; // attack, move, turn, cast
-var map;
+
+var tileHovered;
+var graphics;
 
 // eslint-disable-next-line no-undef
-export default class GameScene extends Phaser.Scene {
+export default class MainScene extends Phaser.Scene {
 	constructor(){
-		super('level1');
+		super({key: 'main'});
 	}
-
+	
 
 	preload() {
 		//this.load.image('logo', 'assets/logo.png');
@@ -45,9 +47,9 @@ export default class GameScene extends Phaser.Scene {
 		map.setCollision(collisionTiles);
 
 		// Tile hovered
-		var tileHovered = this.add.graphics();
+		tileHovered = this.add.graphics();
 		// line for path and others
-		var graphics = this.add.graphics();
+		graphics = this.add.graphics();
 		
 		//creating and positioning player on map
 		player = this.physics.add.image(1584, 1584, 'dude');
@@ -80,17 +82,18 @@ export default class GameScene extends Phaser.Scene {
 			var pathLine = new Phaser.Geom.Line(player.x, player.y+1, worldCoord.x, worldCoord.y)
 			var rawPath = map.getTilesWithinShape(pathLine);
 			path = pathSorter(rawPath, player, worldCoord);
-			console.log(path);
+			// console.log(path);
 			target.x = 0;
 			target.y= 0;
 			//this.physics.moveToObject(player, target, 300);
 		}, this);
 
 		// Adding menu
-		this.scene.add('gui', GUI, true);
+		// console.log(this);
+		this.scene.add('menu', GUI, true, {mode: mode});
 
 		this.input.keyboard.on("keyup-M", function(event){
-			console.log(event);
+			// console.log(event);
 			if(mode === "move"){
 				mode = "attack";
 				selectable = false;
@@ -99,7 +102,7 @@ export default class GameScene extends Phaser.Scene {
 			} else {
 				mode = "move";
 			}
-			console.log(mode);
+			// console.log(mode);
 		});
 
 		
@@ -122,7 +125,7 @@ export default class GameScene extends Phaser.Scene {
 	
 				// check if collision tile in path
 				for (var i = 0 ; i < tiles.length ; i++) {
-					if (collisionTiles.includes(tiles[i].index) || tiles.length > 5) {
+					if (collisionTiles.includes(tiles[i].index) || tiles.length > 50) {
 						tileHovered.fillStyle(0xff0000, 0.5);
 						graphics.lineStyle(3, 0xff0000);
 						selectable = false;
@@ -190,24 +193,16 @@ export default class GameScene extends Phaser.Scene {
 			}
 		}
 	}
-}
 
-// eslint-disable-next-line no-undef
-/*
-class MyBoard extends RexPlugins.Board.Board {
-    constructor(scene) {
-        super(scene, {
-            grid: {
-                gridType: 'quadGrid',
-                x: 16,
-                y: 16,
-                cellWidth: 32,
-                cellHeight: 32,
-                type: 'orthogonal'  // 'orthogonal'|'isometric'|'staggered'
-            },
-            width: 100,
-            height: 100
-        });
-    }
+	changeMode(string) {
+		mode = string;
+		tileHovered.clear();
+		graphics.clear();
+		if(string === "attack"){
+			selectable = false;
+		} 
+		if(string=== "move") {
+			selectable = true;
+		}
+	}
 }
-*/

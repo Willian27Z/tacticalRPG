@@ -1,9 +1,11 @@
 
 var status;
+var moveButton;
+var attackButton;
 
 export default class ActionMenu extends Phaser.Scene {
         constructor(){
-                super('Action Menu');
+                super({key: 'menu', active: true});
         }
 
         preload() {
@@ -18,6 +20,22 @@ export default class ActionMenu extends Phaser.Scene {
 
         create () {
                 status = this.add.image(920, 550, 'Status');
+
+                moveButton = this.add.image(750, 550, 'MoveButton');
+                moveButton.setInteractive();
+                moveButton.on('pointerdown', function(event){
+                        console.log("move!");
+                        this.scene.scene.get("main").changeMode("move");
+                });
+                moveButton.setDepth(1);
+
+                attackButton = this.add.image(750, 630, 'attackButton');
+                attackButton.setInteractive();
+                attackButton.on('pointerdown', function(event){
+                        console.log("attack!");
+                        this.scene.scene.get("main").changeMode("attack");
+                });
+                attackButton.setDepth(1);
         }
         update () {
                 
